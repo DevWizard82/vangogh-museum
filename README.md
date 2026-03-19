@@ -109,7 +109,3 @@ On hover, the painting's texture is sampled via a hidden `<canvas>` element, pix
 
 - LinkedIn: [linkedin.com/in/anas-berrqia](https://www.linkedin.com/in/anas-berrqia-37b653346/)
 - GitHub: [@DevWizard82](https://github.com/DevWizard82)
-
-```
-
-```
