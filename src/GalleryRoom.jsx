@@ -1,7 +1,5 @@
 import * as THREE from "three";
 import { useTexture, MeshReflectorMaterial } from "@react-three/drei";
-import { useEffect } from "react";
-
 export const ROOM_WIDTH = 20;
 export const ROOM_HEIGHT = 10;
 export const ROOM_DEPTH = 24;
@@ -9,19 +7,15 @@ const WALL_THICKNESS = 0.3;
 
 function CeilingGlows() {
   const glowPositions = [
-    // back wall fixtures
     { x: -4.5, z: -ROOM_DEPTH / 2 + 1.2 },
     { x: 0, z: -ROOM_DEPTH / 2 + 1.2 },
     { x: 4.5, z: -ROOM_DEPTH / 2 + 1.2 },
-    // left wall fixtures
     { x: -ROOM_WIDTH / 2 + 1.2, z: -6 },
     { x: -ROOM_WIDTH / 2 + 1.2, z: 0 },
     { x: -ROOM_WIDTH / 2 + 1.2, z: 6 },
-    // right wall fixtures
     { x: ROOM_WIDTH / 2 - 1.2, z: -6 },
     { x: ROOM_WIDTH / 2 - 1.2, z: 0 },
     { x: ROOM_WIDTH / 2 - 1.2, z: 6 },
-    // front wall fixtures
     { x: -4, z: ROOM_DEPTH / 2 - 1.2 },
     { x: 0, z: ROOM_DEPTH / 2 - 1.2 },
     { x: 4, z: ROOM_DEPTH / 2 - 1.2 },
@@ -35,7 +29,6 @@ function CeilingGlows() {
           position={[p.x, ROOM_HEIGHT - 0.02, p.z]}
           rotation={[-Math.PI / 2, 0, 0]}
         >
-          {/* outer soft halo */}
           <circleGeometry args={[0.55, 32]} />
           <meshStandardMaterial
             color="#fff4c2"
@@ -53,7 +46,6 @@ function CeilingGlows() {
           position={[p.x, ROOM_HEIGHT - 0.015, p.z]}
           rotation={[-Math.PI / 2, 0, 0]}
         >
-          {/* inner bright core */}
           <circleGeometry args={[0.18, 24]} />
           <meshStandardMaterial
             color="#ffffff"
@@ -74,27 +66,21 @@ function ChandelierArm({ angle, radius = 1.2 }) {
     <meshStandardMaterial color="#c8922a" roughness={0.15} metalness={0.92} />
   );
   const steps = 8;
-
   const armSegments = Array.from({ length: steps }, (_, i) => {
     const t = i / (steps - 1);
     const r = t * radius;
     const y = -Math.sin(t * Math.PI * 0.5) * 0.45;
-    const x = Math.cos(angle) * r;
-    const z = Math.sin(angle) * r;
-    return { x, y, z, t };
+    return { x: Math.cos(angle) * r, y, z: Math.sin(angle) * r };
   });
 
   return (
     <group>
-      {/* Curved arm segments */}
       {armSegments.map((seg, i) => (
         <mesh key={i} position={[seg.x, seg.y - 1.05, seg.z]}>
           <sphereGeometry args={[0.022, 7, 7]} />
           {goldMat}
         </mesh>
       ))}
-
-      {/* Thicker connector blobs at each segment for volume */}
       {armSegments.map((seg, i) =>
         i < steps - 1 ? (
           <mesh key={`blob-${i}`} position={[seg.x, seg.y - 1.05, seg.z]}>
@@ -103,7 +89,6 @@ function ChandelierArm({ angle, radius = 1.2 }) {
           </mesh>
         ) : null,
       )}
-
       <mesh
         position={[
           Math.cos(angle) * radius * 0.5,
@@ -114,7 +99,6 @@ function ChandelierArm({ angle, radius = 1.2 }) {
         <torusGeometry args={[0.055, 0.022, 8, 16]} />
         {goldMat}
       </mesh>
-
       <mesh
         position={[
           Math.cos(angle) * radius,
@@ -125,7 +109,6 @@ function ChandelierArm({ angle, radius = 1.2 }) {
         <cylinderGeometry args={[0.052, 0.036, 0.09, 12]} />
         {goldMat}
       </mesh>
-
       <mesh
         position={[
           Math.cos(angle) * radius,
@@ -136,7 +119,6 @@ function ChandelierArm({ angle, radius = 1.2 }) {
         <cylinderGeometry args={[0.022, 0.022, 0.18, 8]} />
         <meshStandardMaterial color="#f5f0e8" roughness={0.9} />
       </mesh>
-
       <mesh
         position={[
           Math.cos(angle) * radius,
@@ -148,11 +130,10 @@ function ChandelierArm({ angle, radius = 1.2 }) {
         <meshStandardMaterial
           color="#fff5c0"
           emissive="#ffcc44"
-          emissiveIntensity={8}
+          emissiveIntensity={1.5}
           roughness={0}
         />
       </mesh>
-
       <mesh
         position={[
           Math.cos(angle) * radius,
@@ -169,7 +150,6 @@ function ChandelierArm({ angle, radius = 1.2 }) {
           opacity={0.55}
         />
       </mesh>
-
       {[0.06, 0.14, 0.24].map((offset, i) => (
         <mesh
           key={`drop-${i}`}
@@ -199,11 +179,9 @@ function Chandelier({ position = [0, ROOM_HEIGHT - 2.0, 2] }) {
   );
   const ARM_COUNT = 8;
   const ARM_RADIUS = 1.25;
-
   const arms = Array.from({ length: ARM_COUNT }, (_, i) => ({
     angle: (i / ARM_COUNT) * Math.PI * 2,
   }));
-
   const CHAIN_COUNT = 16;
   const chains = Array.from({ length: CHAIN_COUNT }, (_, i) => ({
     angle: (i / CHAIN_COUNT) * Math.PI * 2,
@@ -220,7 +198,6 @@ function Chandelier({ position = [0, ROOM_HEIGHT - 2.0, 2] }) {
         <cylinderGeometry args={[0.16, 0.22, 0.05, 20]} />
         {goldMat}
       </mesh>
-
       {Array.from({ length: 10 }, (_, i) => (
         <mesh
           key={`chain-${i}`}
@@ -231,7 +208,6 @@ function Chandelier({ position = [0, ROOM_HEIGHT - 2.0, 2] }) {
           {goldMat}
         </mesh>
       ))}
-
       <mesh position={[0, -0.85, 0]}>
         <cylinderGeometry args={[0.055, 0.075, 0.22, 16]} />
         {goldMat}
@@ -248,21 +224,17 @@ function Chandelier({ position = [0, ROOM_HEIGHT - 2.0, 2] }) {
         <cylinderGeometry args={[0.11, 0.09, 0.08, 16]} />
         {goldMat}
       </mesh>
-
       <mesh position={[0, -1.05, 0]}>
         <torusGeometry args={[ARM_RADIUS, 0.032, 12, 64]} />
         {goldMat}
       </mesh>
-
       <mesh position={[0, -1.05, 0]}>
         <torusGeometry args={[0.45, 0.022, 10, 48]} />
         {goldMat}
       </mesh>
-
       {arms.map((arm, i) => (
         <ChandelierArm key={i} angle={arm.angle} radius={ARM_RADIUS} />
       ))}
-
       {chains.map((c, i) => (
         <group key={`curtain-${i}`}>
           {[0, 0.09, 0.2].map((drop, j) => (
@@ -285,8 +257,6 @@ function Chandelier({ position = [0, ROOM_HEIGHT - 2.0, 2] }) {
           ))}
         </group>
       ))}
-
-      {/* ── Center pendant drops ── */}
       <mesh position={[0, -1.42, 0]}>
         <octahedronGeometry args={[0.14, 0]} />
         <meshStandardMaterial
@@ -314,18 +284,16 @@ function Chandelier({ position = [0, ROOM_HEIGHT - 2.0, 2] }) {
           opacity={0.7}
         />
       </mesh>
-
-      {/* ── Lights ── */}
       <pointLight
         position={[0, -0.8, 0]}
-        intensity={55}
+        intensity={25}
         color="#ffd580"
         distance={32}
         decay={1.8}
       />
       <pointLight
         position={[0, -1.05, 0]}
-        intensity={12}
+        intensity={6}
         color="#ffca60"
         distance={20}
         decay={2.5}
@@ -334,13 +302,13 @@ function Chandelier({ position = [0, ROOM_HEIGHT - 2.0, 2] }) {
   );
 }
 
-// ─── Floor ────────────────────────────────────────────────────────────────────
+// ─── Floor — warm cream/ivory marble ─────────────────────────────────────────
 function Floor() {
   const [diffuse, normal, roughness, ao] = useTexture([
-    "/textures/marble_diffuse.png",
-    "/textures/marble_normal.png",
-    "/textures/marble_specular.png",
-    "/textures/marble_ao.png",
+    "/textures/Marble012_1K-JPG_Color.jpg",
+    "/textures/Marble012_1K-JPG_NormalGL.jpg",
+    "/textures/Marble012_1K-JPG_Roughness.jpg",
+    "/textures/Marble012_1K-JPG_Displacement.jpg",
   ]);
   [diffuse, normal, roughness, ao].forEach((t) => {
     t.wrapS = t.wrapT = THREE.RepeatWrapping;
@@ -352,32 +320,33 @@ function Floor() {
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
       <planeGeometry args={[ROOM_WIDTH, ROOM_DEPTH, 1, 1]} />
       <MeshReflectorMaterial
-        mirror={0.25}
-        resolution={512}
-        mixBlur={12}
-        mixStrength={0.5}
-        depthScale={0.8}
-        minDepthThreshold={0.6}
+        mirror={0.4}
+        resolution={1024}
+        mixBlur={1.5}
+        mixStrength={1.5}
+        depthScale={1}
+        minDepthThreshold={0.5}
         maxDepthThreshold={1.2}
         map={diffuse}
         normalMap={normal}
-        normalScale={new THREE.Vector2(0.12, 0.12)}
+        normalScale={new THREE.Vector2(0.15, 0.15)}
         roughnessMap={roughness}
-        roughness={0.18}
+        roughness={0.05}
+        metalness={0.0}
+        color="#c8c2b5"
         aoMap={ao}
-        aoMapIntensity={0.5}
-        color="#ffffff"
+        aoMapIntensity={0.3}
       />
     </mesh>
   );
 }
 
-// ─── Ceiling — linen fabric, tinted warm ivory (not black) ───────────────────
+// ─── Ceiling — warm off-white plaster, visible and bright ────────────────────
 function Ceiling() {
   const [col, norm, rou] = useTexture([
-    "/textures/Fabric022_1K-JPG_Color.jpg",
-    "/textures/Fabric022_1K-JPG_NormalGL.jpg",
-    "/textures/Fabric022_1K-JPG_Roughness.jpg",
+    "/textures/Plaster001_1K-PNG_Color.png",
+    "/textures/Plaster001_1K-PNG_NormalGL.png",
+    "/textures/Plaster001_1K-PNG_Roughness.png",
   ]);
   [col, norm, rou].forEach((t) => {
     t.wrapS = t.wrapT = THREE.RepeatWrapping;
@@ -394,24 +363,21 @@ function Ceiling() {
       <planeGeometry args={[ROOM_WIDTH, ROOM_DEPTH]} />
       <meshStandardMaterial
         map={col}
-        normalMap={norm}
-        normalScale={new THREE.Vector2(0.25, 0.25)}
         roughnessMap={rou}
-        color="#8a7560" // warm ivory-taupe tint — visible under ceiling lights
-        roughness={0.9}
-        metalness={0.0}
+        color="#a39073"
+        roughness={0.88}
         side={THREE.FrontSide}
       />
     </mesh>
   );
 }
 
-// ─── Walls — warm sand/stone linen (not blue-grey) ───────────────────────────
+// ─── Walls — warm museum taupe, noticeably lighter ────────────────────────────
 function Walls() {
   const [fabricColor, fabricNormal, fabricRoughness] = useTexture([
-    "/textures/Fabric022_1K-JPG_Color.jpg",
-    "/textures/Fabric022_1K-JPG_NormalGL.jpg",
-    "/textures/Fabric022_1K-JPG_Roughness.jpg",
+    "/textures/Plaster001_1K-PNG_Color.png",
+    "/textures/Plaster001_1K-PNG_NormalGL.png",
+    "/textures/Plaster001_1K-PNG_Roughness.png",
   ]);
   fabricColor.colorSpace = THREE.SRGBColorSpace;
 
@@ -451,17 +417,15 @@ function Walls() {
         });
         col.colorSpace = THREE.SRGBColorSpace;
         return (
-          <mesh key={i} position={w.position} castShadow receiveShadow>
+          <mesh key={i} position={w.position} receiveShadow>
             <boxGeometry args={w.args} />
             <meshStandardMaterial
               map={col}
-              normalMap={norm}
-              normalScale={new THREE.Vector2(0.5, 0.5)}
               roughnessMap={rou}
-              color="#6b5c48" // warm dark taupe — harmonises with gold & marble
+              color="#f0eadd"
               roughness={0.9}
-              metalness={0.0}
-              envMapIntensity={0.4}
+              metalness={0.1}
+              envMapIntensity={0.5}
             />
           </mesh>
         );
@@ -470,38 +434,57 @@ function Walls() {
   );
 }
 
-// ─── Track light fixture (the visible cylinder on the ceiling) ────────────────
-function TrackFixture({ x, z }) {
+// ─── Track light fixture ──────────────────────────────────────────────────────
+function TrackFixture({ x, z, rotY = 0 }) {
   return (
-    <group position={[x, ROOM_HEIGHT - 0.01, z]}>
-      {/* Rail bar segment */}
-      <mesh>
-        <boxGeometry args={[0.06, 0.05, 0.22]} />
-        <meshStandardMaterial color="#222" roughness={0.4} metalness={0.8} />
-      </mesh>
-      {/* Lamp head — angled cone */}
-      <mesh position={[0, -0.12, 0]} rotation={[0.28, 0, 0]}>
-        <cylinderGeometry args={[0.04, 0.09, 0.18, 12]} />
-        <meshStandardMaterial color="#1a1a1a" roughness={0.3} metalness={0.9} />
-      </mesh>
-      {/* Bulb glow */}
-      <mesh position={[0, -0.22, 0.04]}>
-        <sphereGeometry args={[0.03, 8, 8]} />
+    <group position={[x, ROOM_HEIGHT - 0.45, z]} rotation={[0, rotY, 0]}>
+      <mesh position={[0, 0.2, 0]}>
+        <cylinderGeometry args={[0.018, 0.018, 0.38, 8]} />
         <meshStandardMaterial
-          color="#fff8e0"
-          emissive="#fff8e0"
-          emissiveIntensity={3}
-          roughness={0}
-          metalness={0}
+          color="#1a1a1a"
+          roughness={0.4}
+          metalness={0.85}
         />
       </mesh>
+      <mesh position={[0, 0.38, 0]}>
+        <cylinderGeometry args={[0.04, 0.04, 0.04, 10]} />
+        <meshStandardMaterial color="#111" roughness={0.35} metalness={0.9} />
+      </mesh>
+      <group position={[0, -0.04, 0]} rotation={[0.6, 0, 0]}>
+        <mesh>
+          <cylinderGeometry args={[0.05, 0.12, 0.16, 32]} />
+          <meshStandardMaterial
+            color="#1a1a1a"
+            roughness={0.3}
+            metalness={0.9}
+          />
+        </mesh>
+        <mesh position={[0, -0.08, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[0.11, 0.015, 16, 32]} />
+          <meshStandardMaterial
+            color="#ffeaa3"
+            emissive="#ffc857"
+            emissiveIntensity={5}
+            roughness={0}
+            toneMapped={false}
+          />
+        </mesh>
+        <mesh position={[0, -0.075, 0]}>
+          <cylinderGeometry args={[0.1, 0.1, 0.01, 32]} />
+          <meshStandardMaterial
+            color="#ffffff"
+            emissive="#ffdd88"
+            emissiveIntensity={2}
+          />
+        </mesh>
+      </group>
     </group>
   );
 }
 
-// ─── Skirting boards ─────────────────────────────────────────────────────────
+// ─── Skirting boards ──────────────────────────────────────────────────────────
 function SkirtingBoards() {
-  const H = 0.14,
+  const H = 0.15,
     D = 0.07;
   const boards = [
     { pos: [0, H / 2, -ROOM_DEPTH / 2 + D / 2], args: [ROOM_WIDTH, H, D] },
@@ -525,7 +508,7 @@ function SkirtingBoards() {
   );
 }
 
-// ─── Crown moulding ──────────────────────────────────────────────────────────
+// ─── Crown moulding ───────────────────────────────────────────────────────────
 function CrownMoulding() {
   const H = 0.1,
     D = 0.09,
@@ -552,7 +535,7 @@ function CrownMoulding() {
   );
 }
 
-// ─── Track rail (long bar running along ceiling) ──────────────────────────────
+// ─── Track rail ───────────────────────────────────────────────────────────────
 function TrackRail({ x }) {
   return (
     <mesh position={[x, ROOM_HEIGHT - 0.03, 0]}>
@@ -562,28 +545,8 @@ function TrackRail({ x }) {
   );
 }
 
-// ─── Export ──────────────────────────────────────────────────────────────────
+// ─── Export ───────────────────────────────────────────────────────────────────
 export default function GalleryRoom() {
-  // Fixture positions matching the 12 painting spotlights
-  const fixturePositions = [
-    // back wall row
-    { x: -4.5, z: -ROOM_DEPTH / 2 + 1.2 },
-    { x: 0, z: -ROOM_DEPTH / 2 + 1.2 },
-    { x: 4.5, z: -ROOM_DEPTH / 2 + 1.2 },
-    // left wall row
-    { x: -ROOM_WIDTH / 2 + 1.2, z: -6 },
-    { x: -ROOM_WIDTH / 2 + 1.2, z: 0 },
-    { x: -ROOM_WIDTH / 2 + 1.2, z: 6 },
-    // right wall row
-    { x: ROOM_WIDTH / 2 - 1.2, z: -6 },
-    { x: ROOM_WIDTH / 2 - 1.2, z: 0 },
-    { x: ROOM_WIDTH / 2 - 1.2, z: 6 },
-    // front wall row
-    { x: -4, z: ROOM_DEPTH / 2 - 1.2 },
-    { x: 0, z: ROOM_DEPTH / 2 - 1.2 },
-    { x: 4, z: ROOM_DEPTH / 2 - 1.2 },
-  ];
-
   return (
     <group>
       <Floor />
@@ -591,14 +554,6 @@ export default function GalleryRoom() {
       <Walls />
       <SkirtingBoards />
       <CrownMoulding />
-      {/* Ceiling track rails */}
-      {[-4.5, 0, 4.5].map((x) => (
-        <TrackRail key={x} x={x} />
-      ))}
-      {/* Individual lamp fixtures */}
-      {fixturePositions.map((p, i) => (
-        <TrackFixture key={i} x={p.x} z={p.z} />
-      ))}
       <CeilingGlows />
       <Chandelier position={[0, ROOM_HEIGHT - 1.5, 2]} />
     </group>

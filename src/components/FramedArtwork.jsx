@@ -3,22 +3,6 @@ import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-/**
- * FramedArtwork
- *
- * Props:
- *  position    [x,y,z]
- *  rotation    [x,y,z]
- *  imageUrl    string
- *  width       number  (default 2.8)
- *  height      number  (default 2.0)
- *  frameDepth  number  (default 0.12)
- *  frameColor  string  (default "#3d1f07")
- *  title       string  — stored in mesh.userData for the raycaster
- *  isHovered   bool    — controlled externally by the raycaster
- *  registerMesh   (mesh) => void   — call to add canvas mesh to raycaster pool
- *  unregisterMesh (mesh) => void   — call on unmount
- */
 export default function FramedArtwork({
   position = [0, 2, -5],
   rotation = [0, 0, 0],
