@@ -154,7 +154,7 @@ export default function GalleryUI() {
   const audioRef = useRef(null);
   const [hoverPct, setHoverPct] = useState(null);
   const [hoverTime, setHoverTime] = useState(null);
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(true);
   const [current, setCurrent] = useState(0); // index in PLAYLIST
   const [progress, setProgress] = useState(0); // 0–100
 
@@ -194,6 +194,38 @@ export default function GalleryUI() {
     a.addEventListener("ended", onEnd);
     return () => a.removeEventListener("ended", onEnd);
   }, []);
+
+  // ── Handle Autoplay on First Interaction ─────────────────────────
+  useEffect(() => {
+    const a = audioRef.current;
+    if (!a) return;
+
+    const handleFirstInteraction = () => {
+      if (playing && a.paused) {
+        a.volume = 0.45;
+        a.play().catch(() => {});
+      }
+      ["click", "keydown", "touchstart"].forEach((event) =>
+        window.removeEventListener(event, handleFirstInteraction),
+      );
+    };
+
+    ["click", "keydown", "touchstart"].forEach((event) =>
+      window.addEventListener(event, handleFirstInteraction, { once: true }),
+    );
+
+    // Initial attempt for browsers that allow autoplay without interaction
+    if (playing && a.paused) {
+      a.volume = 0.45;
+      a.play().catch(() => {});
+    }
+
+    return () => {
+      ["click", "keydown", "touchstart"].forEach((event) =>
+        window.removeEventListener(event, handleFirstInteraction),
+      );
+    };
+  }, [playing, current]);
 
   const togglePlay = useCallback(() => {
     const a = audioRef.current;
