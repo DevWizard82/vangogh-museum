@@ -1,5 +1,7 @@
 # 🖼️ Van Gogh — Visual Intelligence Museum
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-View_Site-deb887?style=for-the-badge)](https://vangogh-museum.vercel.app)
+
 > An immersive, first-person 3D art gallery built with React Three Fiber, featuring real-time spotlight rendering, procedural lighting, colour histogram analysis, and live GLSL shader effects.
 
 ![Van Gogh Museum Banner](./public/screenshots/banner.png)
